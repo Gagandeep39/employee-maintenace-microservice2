@@ -4,19 +4,28 @@ node {
         checkout scm
     }
     stage('Preparation') {
-            dir('employee-eureka-server') {
-                sh 'ls'
+        dir('employee-eureka-server') {
+            sh 'ls'
             pom = readMavenPom file: 'pom.xml'
             sh 'echo pom.version'
             IMAGE = pom.artifactId
             VERSION = pom.version
             sh 'chmod +x mvnw'
-            }
+        }
     }
     stage ('Compile Stage') {
         dir('employee-eureka-server') {
-            
             sh'./mvnw clean compile'
+        }
+    } 
+    stage ('Testing Stage') {
+        dir('employee-eureka-server') {
+            sh'./mvnw test'
+        }
+    }
+    stage ('Package Stage') {
+        dir('employee-eureka-server') {
+            sh'./mvnw package'
         }
     }
 }
