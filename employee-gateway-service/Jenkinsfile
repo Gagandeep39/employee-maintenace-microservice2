@@ -1,0 +1,80 @@
+
+pipeline =  {
+    stage('Checkout') {
+        checkout scm
+    }
+    stage('Preparation') {
+        dir('employee-gateway-service') {
+            pom = readMavenPom file: 'pom.xml'
+            sh 'echo pom.version'
+            IMAGE = pom.artifactId
+            VERSION = pom.version
+            sh 'chmod +x mvnw'
+        }
+    }
+    stage ('Compile Stage') {
+        dir('employee-gateway-service') {
+            sh'./mvnw clean compile'
+        }
+    } 
+    stage ('Testing Stage') {
+        dir('employee-gateway-service') {
+            sh'./mvnw test'
+        }
+    }
+    stage ('Package Stage') {
+        dir('employee-gateway-service') {
+            sh'./mvnw clean package'
+        }
+    }
+    stage('Sonar Scanner') {
+        dir ('employee-gateway-service') {
+            SONAR = credentials('sonar')
+            sh './mvnw sonar:sonar -Dsonar.login=${sonarLogin} -Dsonar.host.url=http://sonarqube:9000'
+        }
+    }
+    stage ('Build/Publish') {
+        dir ('employee-gateway-service') {
+            docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+            docker.build("gagandeep39/employee-gateway-service:${VERSION}", '.').push()
+            docker.build("gagandeep39/employee-gateway-service:latest", '.').push()
+            }
+        }
+    }
+    stage ('Deploy on this Server') {
+        dir ('employee-gateway-service') {
+            sh 'echo ${VERSION}'
+            sh 'docker stop employee-gateway-service || echo Container is not on'
+            sh 'docker container rm -f employee-gateway-service || echo Container doesnt exists'
+            docker.image('gagandeep39/employee-gateway-service:' + VERSION).run('-p 9900:9900 --link remote-mysql --name employee-gateway-service -m=800m')
+            sh 'docker image prune -f'
+        }
+    }
+}
+postFailure = {
+    def to = emailextrecipients([
+        [$class: 'CulpritsRecipientProvider'],
+        [$class: 'DevelopersRecipientProvider'],
+        [$class: 'RequesterRecipientProvider']
+    ])
+
+    currentBuild.result = 'FAILURE'
+    // set variables
+    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+    def content = '${JELLY_SCRIPT,template="html"}'
+    // send email
+    if (to != null && !to.isEmpty()) {
+        emailext(body: content, mimeType: 'text/html',
+                replyTo: '$DEFAULT_REPLYTO', subject: subject,
+                to: to, attachLog: true )
+    }
+}
+
+node {
+    try {
+        pipeline()
+    }
+    catch (e) {
+        postFailure()
+    }
+}
