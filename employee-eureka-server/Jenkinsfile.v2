@@ -1,8 +1,11 @@
 pipeline {
     agent any
-    environment {
-        IMAGE = readMavenPom().getArtifactId()
-        VERSION = readMavenPom().getVersion()
+    environment ('employee-eureka-server') {
+        dir {
+            pom = readMavenPom file: 'pom.xml'
+            IMAGE = pom.artifactId
+            VERSION = pom.version
+        }
     }
     stages {
         stage ('Preparation') {
