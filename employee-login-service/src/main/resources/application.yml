@@ -9,6 +9,6 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka
 spring:
   profiles:
-    active: prod
+    active: dev
   application:
     name: employee-login-service
