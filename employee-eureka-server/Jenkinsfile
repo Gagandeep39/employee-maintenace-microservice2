@@ -5,6 +5,8 @@ pipeline = {
 
     stage('Preparation') {
         checkout scm
+        sh 'pwd'
+        sh 'ls'
         sh 'cd employee-eureka-server'
         echo 'test'
         pom = readMavenPom file: 'pom.xml'
