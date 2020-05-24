@@ -1,88 +1,67 @@
-pipeline {
-    agent any
-    environment {
-        IMAGE = readMavenPom().getArtifactId()
-        VERSION = readMavenPom().getVersion()
-        def to = emailextrecipients([
+pipeline = {
+
+    def IMAGE = readMavenPom().getArtifactId()
+    def VERSION = readMavenPom().getVersion()
+
+    stage('Preparation') {
+        checkout scm
+        sh 'git rev-parse --short HEAD > .git/commit-id'
+        commit_id = readFile('.git/commit-id').trim()
+        sh 'chmod +x mvnw'
+    }
+    stage ('Compile Stage') {
+        sh'./mvnw clean compile'
+    }
+    stage ('Testing Stage') {
+        sh'./mvnw test'
+    }
+    stage ('Package Stage') {
+        sh'./mvnw package'
+    }
+    stage('Sonar Scanner') {
+        def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+            sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=spring-jenkin-demo -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
+        }
+    }
+    stage ('Build/Publish') {
+        docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+            docker.build("gagandeep39/spring-jenkins-demo:${VERSION}", '.').push()
+        }
+    }
+    stage ('Deploy on this Server') {
+        sh 'docker stop spring-jenkins-demo || echo Container is not on'
+        sh 'docker container rm -f spring-jenkins-demo || echo Container doesnt exists'
+        docker.image('gagandeep39/spring-jenkins-demo:' + VERSION).run('-p 8081:8081 --name spring-jenkins-demo')
+        sh 'docker image prune -f'
+    }
+}
+
+postFailure = {
+    
+    def to = emailextrecipients([
         [$class: 'CulpritsRecipientProvider'],
         [$class: 'DevelopersRecipientProvider'],
         [$class: 'RequesterRecipientProvider']
     ])
-    }
 
-    stages {
-        stage('Preparation') {
-            steps {
-                // checkout scm
-                // sh 'git rev-parse --short HEAD > .git/commit-id'
-                // script {
-                //     commit_id = readFile('.git/commit-id').trim()
-                // }
-                sh 'cd employee-eureka-server'
-                sh 'chmod +x mvnw'
-            }
-        }
-        stage ('Compile Stage') {
-            steps {
-                sh'./mvnw clean compile'
-            }
-        }
-        stage ('Testing Stage') {
-            steps {
-                sh'./mvnw test'
-            }
-        }
-        stage ('Package Stage') {
-            steps {
-                sh'./mvnw package'
-            }
-        }
-        stage('Sonar Scanner') {
-            steps {
-                script {
-                    sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-                        sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=employee-eureka-server -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=employee-eureka-server/src/main/ -Dsonar.tests=employee-eureka-server/src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
-                    }
-                }
-            }
-        }
-        stage ('Build/Publish') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker') {
-                        docker.build("gagandeep39/employee-eureka-server:${VERSION}", '.').push()
-                        docker.build('gagandeep39/employee-eureka-server:latest', '.').push()
-                    }
-                }
-            }
-        }
-        stage ('Deploy on this Server') {
-            steps {
-                script {
-                    sh 'docker stop employee-eureka-server || echo Container is not on'
-                    sh 'docker container rm -f spring-jenkins-demo || echo Container doesnt exists'
-                    docker.image('gagandeep39/employee-eureka-server:' + VERSION).run('-p 8081:8081 --name employee-eureka-server')
-                    sh 'docker image prune -f'
-                }
-            }
-        }
-    }
-
-    post {
-        failure {
-            script {
-                currentBuild.result = 'FAILURE'
-                // set variables
-                subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
-                content = '${JELLY_SCRIPT,template="html"}'
-                // send email
-                if (to != null && !to.isEmpty()) {
-                    emailext(body: content, mimeType: 'text/html',
+    currentBuild.result = 'FAILURE'
+    // set variables
+    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+    def content = '${JELLY_SCRIPT,template="html"}'
+    // send email
+    if (to != null && !to.isEmpty()) {
+        emailext(body: content, mimeType: 'text/html',
                 replyTo: '$DEFAULT_REPLYTO', subject: subject,
                 to: to, attachLog: true )
-                }
-            }
-        }
+    }
+}
+
+node {
+    try {
+        pipeline()
+    }
+    catch (e) {
+        postFailure()
     }
 }
