@@ -25,7 +25,7 @@ pipeline =  {
     stage ('Package Stage') {
         dir('employee-eureka-server') {
             sh'./mvnw package'
-            exit 1
+            sh 'exit 1'
         }
     }
     stage('Sonar Scanner') {
