@@ -47,7 +47,7 @@ node {
         dir ('employee-eureka-server') {
             sh 'docker stop employee-eureka-server || echo Container is not on'
             sh 'docker container rm -f employee-eureka-server || echo Container doesnt exists'
-            docker.image('gagandeep39/employee-eureka-server:' + VERSION).run('-p 8081:8081 --name employee-eureka-server')
+            docker.image('gagandeep39/employee-eureka-server:' + VERSION).run('-p 7000:7000 --name employee-eureka-server')
             sh 'docker image prune -f'
         }
     }
