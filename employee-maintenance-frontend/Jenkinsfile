@@ -17,6 +17,7 @@ pipeline = {
             dir ('employee-maintenance-frontend') {
                 sh 'npm install --only=dev'
                 sh 'npm install @angular/cli@6'
+                sh 'npm link @angular/cli@6'
                 sh 'ng build --prod'
             }
         }
