@@ -1,0 +1,80 @@
+
+pipeline =  {
+    stage('Checkout') {
+        checkout scm
+    }
+    stage('Preparation') {
+        dir('employee-leave-service') {
+            pom = readMavenPom file: 'pom.xml'
+            sh 'echo pom.version'
+            IMAGE = pom.artifactId
+            VERSION = pom.version
+            sh 'chmod +x mvnw'
+        }
+    }
+    stage ('Compile Stage') {
+        dir('employee-leave-service') {
+            sh'./mvnw clean compile'
+        }
+    } 
+    stage ('Testing Stage') {
+        dir('employee-leave-service') {
+            sh'./mvnw test'
+        }
+    }
+    stage ('Package Stage') {
+        dir('employee-leave-service') {
+            sh'./mvnw package'
+        }
+    }
+    stage('Sonar Scanner') {
+        dir ('employee-leave-service') {
+            SONAR = credentials('sonar')
+            sh './mvnw sonar:sonar -Dsonar.login=${sonarLogin} -Dsonar.host.url=http://sonarqube:9000'
+        }
+    }
+    stage ('Build/Publish') {
+        dir ('employee-leave-service') {
+            docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+            docker.build("gagandeep39/employee-leave-service:${VERSION}", '.').push()
+            docker.build("gagandeep39/employee-leave-service:latest", '.').push()
+            }
+        }
+    }
+    stage ('Deploy on this Server') {
+        dir ('employee-leave-service') {
+            sh 'echo ${VERSION}'
+            sh 'docker stop employee-leave-service || echo Container is not on'
+            sh 'docker container rm -f employee-leave-service || echo Container doesnt exists'
+            docker.image('gagandeep39/employee-leave-service:' + VERSION).run('-p 9300:9300 --link remote-mysql --name employee-leave-service')
+            sh 'docker image prune -f'
+        }
+    }
+}
+postFailure = {
+    def to = emailextrecipients([
+        [$class: 'CulpritsRecipientProvider'],
+        [$class: 'DevelopersRecipientProvider'],
+        [$class: 'RequesterRecipientProvider']
+    ])
+
+    currentBuild.result = 'FAILURE'
+    // set variables
+    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+    def content = '${JELLY_SCRIPT,template="html"}'
+    // send email
+    if (to != null && !to.isEmpty()) {
+        emailext(body: content, mimeType: 'text/html',
+                replyTo: '$DEFAULT_REPLYTO', subject: subject,
+                to: to, attachLog: true )
+    }
+}
+
+node {
+    try {
+        pipeline()
+    }
+    catch (e) {
+        postFailure()
+    }
+}
