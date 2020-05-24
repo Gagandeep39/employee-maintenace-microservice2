@@ -1,0 +1,89 @@
+<div class="container-fluid">
+  <form [formGroup]="userRegisterationForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+
+    <legend>
+      <h2 class="display-4"><b>User Registration Form</b></h2>
+    </legend>
+    <hr>
+  
+      <!-- username  -->
+      <div class="form-group">
+        <label for="uname">Username</label>
+        <input
+        formControlName="username"
+        id="uname"
+        class="form-control"
+        [ngClass]="{'is-invalid': submitted && userRegisterationForm.get('username').invalid}"
+        type="text"
+        name="uname"
+        placeholder="Enter Username">
+        <div class="invalid-feedback" *ngIf="submitted && userRegisterationForm.get('username').invalid">
+          <div *ngIf="userRegisterationForm.get('username').errors['required']">* Required</div>
+          <div *ngIf="userRegisterationForm.get('username').errors['pattern']">Username cannot have spaces, length must be (4-12)</div>
+          <div *ngIf="userRegisterationForm.get('username').errors['minLength']">Username must have minimum 4 characters</div>
+          <div *ngIf="userRegisterationForm.get('username').errors['usernameTaken']">Username Is Taken</div>
+        </div>
+      </div>
+      <!-- user type  -->
+      <div formGroupName="role">
+          <div class="form-group">
+            <label for="roletype">Role Type</label>
+            <select
+            name="roletype"
+            id="roletype"
+            formControlName="roleId"
+            [ngClass]="{'is-invalid': submitted && userRegisterationForm.get('role.roleId').invalid}"
+            class="custom-select">
+                <option *ngFor="let r of roles" [value]="r.roleId"> {{r.role}} </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && userRegisterationForm.get('role.roleId').invalid">Select a role</div>
+          </div>
+      </div>
+      <!-- password  -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+        formControlName="password"
+        id="password"
+        class="form-control"
+        [ngClass]="{'is-invalid': submitted && userRegisterationForm.get('password').invalid}"
+        type="password"
+        name="password"
+        placeholder="Enter Password">
+        <div class="invalid-feedback" *ngIf="submitted && userRegisterationForm.get('password').invalid">
+          <div *ngIf="userRegisterationForm.get('password').errors['required']">* Required</div>
+          <div *ngIf="userRegisterationForm.get('password').errors['pattern']">Password must contain atleast 1 uppercase, lowercase and number with length (6-12)</div>
+        </div>
+      </div>
+      <!-- confirm password  -->
+      <div class="form-group">
+        <label for="cpassword">Confirm Password</label>
+        <input
+        formControlName="confirmPassword"
+        id="cpassword"
+        class="form-control"
+        [ngClass]="{'is-invalid': submitted && userRegisterationForm.get('confirmPassword').invalid}"
+        type="password"
+        name="cpassword"
+        placeholder="Re-enter Password">
+        <div class="invalid-feedback" *ngIf="submitted && userRegisterationForm.get('confirmPassword').invalid">
+          <div *ngIf="userRegisterationForm.get('confirmPassword').errors['required']">* Required</div>
+          <div *ngIf="userRegisterationForm.get('confirmPassword').errors['pattern']">Password must contain atleast 1 uppercase, lowercase and number</div>
+          <div *ngIf="userRegisterationForm.get('confirmPassword').errors['passwordMatchError']">Passwords are not same</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="submit" class="btn btn-primary" *ngIf="!isLoading">Next</button>
+          <div class="spinner-border text-primary" style="margin-left: 20px; padding-top: 20px;" *ngIf="isLoading"></div>
+        </div>
+        <div class="col text-danger">
+          {{ errorMessage }}
+        </div>
+      </div>
+  </form>
+</div>
+
+<!-- <pre>
+  {{ userRegisterationForm.value | json }}
+</pre> -->

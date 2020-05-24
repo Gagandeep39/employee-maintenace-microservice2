@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  <form [formGroup]="userEditForm" (ngSubmit)="onSubmit()">
+
+    <legend>
+      <h2 class="display-4"><b>Edit User</b></h2>
+    </legend>
+    <hr>
+    <table class="table table-hover" *ngIf="user!=null">
+      <tr>
+        <td> Username </td>
+        <td> {{ user?.empId }} </td>
+      </tr>
+      <tr>
+        <td> Role </td>
+        <td> {{ user?.role?.role }} </td>
+      </tr>
+    </table>
+    <hr>
+      <!-- user type  -->
+      <div formGroupName="role">
+          <div class="form-group">
+            <label for="roletype">Role Type</label>
+            <select
+            name="roletype"
+            id="roletype"
+            formControlName="roleId"
+            [ngClass]="{'is-invalid': submitted && userEditForm.get('role.roleId').invalid}"
+            class="custom-select">
+                <option *ngFor="let r of roles" [value]="r.roleId"> {{r.role}} </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && userEditForm.get('role.roleId').invalid">Select a role</div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="submit" class="btn btn-primary" *ngIf="!isLoading">Update</button>
+          <div class="spinner-border text-primary" style="margin-left: 20px; padding-top: 20px;" *ngIf="isLoading"></div>
+        </div>
+        <div class="col text-danger">
+          {{ errorMessage }}
+        </div>
+      </div>
+      <div *ngIf="referenceMessage" class="text-success">
+        {{ referenceMessage | json }}
+      </div>
+  </form>
+</div>
+
+<pre>
+  <!-- {{ userEditForm.value | json }} -->
+  <!-- {{ user | json }} -->
+</pre>

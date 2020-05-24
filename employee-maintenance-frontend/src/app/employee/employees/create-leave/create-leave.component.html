@@ -1,0 +1,49 @@
+<div class="container">
+  <legend>
+    <h2 class="display-4"><b>Apply For Leave</b></h2>
+  </legend>
+  <hr>
+
+  <form class="" [formGroup]="form"(ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="dateFrom">Start Date</label>
+      <input 
+      onkeydown="return false"
+      id="dateFrom"
+      class="form-control"
+      [ngClass]="{'is-invalid': submitted && form.get('dateFrom').invalid}"
+      type="date" 
+      name="dateFrom" 
+      formControlName="dateFrom">
+      <div class="invalid-feedback" *ngIf="submitted && form.get('dateFrom').invalid">
+        <div *ngIf="form.get('dateFrom').errors['required']">* Required</div>
+        <div *ngIf="form.get('dateFrom').errors['previousDate']">Date must be after today</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="dateFrom">End Date</label>
+      <input 
+      onkeydown="return false"
+      id="dateFrom"
+      class="form-control"
+      type="date" 
+      name="dateTo" 
+      [ngClass]="{'is-invalid': submitted && form.get('dateTo').invalid}"
+      formControlName="dateTo">
+      <div class="invalid-feedback" *ngIf="submitted && form.get('dateTo').invalid">
+        <div *ngIf="form.get('dateTo').errors['dateToLessThanFrom']">Date cannot be less than start date</div>
+        <div *ngIf="form.get('dateTo').errors['required']">* Required</div>
+        <div *ngIf="form.get('dateTo').errors['insufficientBalance']">Insufficient Balance</div>
+      </div>
+    </div>
+    <button type="Submit" class="btn btn-success" [disabled]="!leaveButtonEnabled">
+      Submit
+    </button>
+    <div class="spinner-border text-success" style="margin-left: 30px;" *ngIf="isLoading"></div>
+    <div class="text-danger">
+        {{ errorMessage }}
+    </div>
+  </form>
+</div>
+<!-- {{ form.value | json }} -->
+<!-- {{ form.valid | json }} -->

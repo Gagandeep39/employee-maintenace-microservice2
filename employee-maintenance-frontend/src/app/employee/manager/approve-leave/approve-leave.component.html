@@ -1,0 +1,64 @@
+<div class="container">
+  <legend class="row">
+    <h2 class="display-4 col"><b>Approve Leaves</b></h2>
+    <div class="col" align="right">
+      <div class="spinner-border text-dark" *ngIf="isLoading"></div>
+    </div>
+  </legend>
+  <hr>
+  <table class="table table-hover table-bordered">
+
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>Date from</td>
+        <td>Date to</td>
+        <td>Number of days</td>
+        <td>Update Status</td>
+      </tr>
+    </thead>
+    <tr *ngFor="let leave of leavePage.content">
+      <th> {{ leave.leaveId }} </th>
+      <td> {{ leave.dateFrom }} </td>
+      <td> {{ leave.dateTo }} </td>
+      <td> {{ leave.numberOfDays }} </td>
+      <td> 
+
+        <div class="input-group mb-2" *ngIf="leave.leaveStatus=='Applied'">
+          <select class="form-control" #status="ngModel" ngModel  name="newStatus">
+            <option value="">Update Status</option>
+            <option *ngFor="let leaveStatus of leaveStatuses | keyvalue" [value]="leaveStatus.key"> {{ leaveStatus.value }} </option>
+          </select>
+          <div class="input-group-append"  >
+            <button class="btn btn-success" [disabled]="status.value=='Applied' || status.value==''" (click)="updateStatus(status.value, leave.leaveId)">✓</button>
+          </div>
+        </div>
+
+        <div class="input-group" *ngIf="leave.leaveStatus=='Rejected'">
+          <button [disabled]="true" class="btn btn-danger">Rejected</button>
+        </div>
+
+        
+        <div class="input-group" *ngIf="leave.leaveStatus=='Approved'">
+          <button [disabled]="true" class="btn btn-success" >Approved</button>
+        </div>
+      </td>
+    </tr>
+
+  </table>
+
+  <p class="text-danger"> {{ errorMessage }} </p>
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a *ngIf="!leavePage.first" class="page-link" (click)="previousPage()">Previous</a>
+      <a *ngIf="leavePage.first" class="page-link" [ngClass]="{'disabled': leavePage.first}">Previous</a>
+    </li>
+    <li class="page-item" *ngFor="let count of counter(leavePage.totalPages); let i = index">
+      <a class="page-link" (click)="goToPage(i)"> {{ i+1 }} </a>
+    </li>
+    <li class="page-item">
+      <a *ngIf="!leavePage.last" class="page-link" (click)="nextPage()">Next</a>
+      <a *ngIf="leavePage.last" class="page-link" [ngClass]="{'disabled': leavePage.last}">Next</a>
+    </li>
+  </ul>
+</div>

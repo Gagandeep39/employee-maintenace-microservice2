@@ -1,0 +1,348 @@
+<div class="container-fluid">
+
+  <form class="well form-horizontal" [formGroup]="employeeForm" (ngSubmit)="submitForm()">
+
+    <!-- Form Name -->
+
+    <legend>
+      <h2 class="display-4"><b>Employee Registration Form</b></h2>
+    </legend>
+    <hr>
+    <div>
+      <div class="row">
+        <!-- ID -->
+      <input formControlName="empDetailsId" type="hidden">
+      <!-- First Name  -->
+      <div class="col">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input
+          formControlName="firstName"
+          id="firstName"
+          class="form-control"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('firstName').invalid}"
+          type="text"
+          name="firtName"
+          placeholder="Enter First Name">
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('firstName').invalid">
+            <div *ngIf="employeeForm.get('firstName').errors['required']">* Required</div>
+          </div>
+
+        </div>
+      </div>
+      <!-- Last name  -->
+      <div class="col">
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input
+          formControlName="lastName"
+          type="text"
+          name="lastName"
+          id="lastName"
+          class="form-control"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('lastName').invalid}"
+          placeholder="Enter Last Name">
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('lastName').invalid">
+            <div *ngIf="employeeForm.get('lastName').errors['required']">* Required</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- date of birth   -->
+      <div class="col">
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input
+          formControlName="dateOfBirth"
+          data-date-end-date="0d"
+          onkeydown="return false"
+          type="date"
+          id="dob"
+          name="dob"
+          class="form-control date-picker"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('dateOfBirth').invalid}"
+          >
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('dateOfBirth').invalid">
+            <div *ngIf="employeeForm.get('dateOfBirth').errors['required']">* Required</div>
+            <div *ngIf="employeeForm.get('dateOfBirth').errors['ageIsForbidden']">Employee's Age must be between 18 and 58</div>
+            <div *ngIf="employeeForm.get('dateOfBirth').errors['futureDateForbidden']">Future dte not allowed</div>
+            <!-- TODO - Do not show future dates  -->
+          </div>
+        </div>
+      </div>
+      <!-- Join date  -->
+      <div class="col">
+        <div class="form-group">
+          <label for="dob">Date of Joining</label>
+          <input
+          formControlName="dateOfJoining"
+          type="date"
+          onkeydown="return false"
+          id="dob"
+          name="dob"
+          class="form-control"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('dateOfJoining').invalid}"
+          >
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('dateOfJoining').invalid">
+            <div *ngIf="employeeForm.get('dateOfJoining').errors['required']">* Required</div>
+            <!-- <div *ngIf="employeeForm.get('dateOfJoining').errors['futureDateForbidden']">Future dte not allowed</div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Marital status  -->
+      <div class="col">
+        <div class="form-group">
+          <label for="status">Matital Status</label>
+          <select
+          name="status"
+          id="status"
+          formControlName="maritalStatus"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('maritalStatus').invalid}"
+          class="custom-select">
+              <option *ngFor="let s of maritalStatus | keyvalue" [value]="s.key"> {{s.value}} </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('maritalStatus').invalid">Select a Value</div>
+      </div>
+      </div>
+      <!-- Gender  -->
+      <div class="col">
+        <label>Gender</label>
+          <div *ngFor="let g of genders | keyvalue" class="custom-control custom-radio">
+            <input
+            formControlName="gender"
+              [ngClass]="{'is-invalid':submitted && employeeForm.get('gender').invalid}"
+              [value]="g.key"
+              class="custom-control-input"
+              id="{{g.key}}"
+              type="radio">
+            <label class="custom-control-label" for="{{g.key}}">{{g.value}}</label>
+          </div>
+          <div *ngIf="submitted && employeeForm.get('gender').invalid" class="text-danger">
+            <small>Select an Option</small>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Deprtment  -->
+      <div formGroupName="department">
+        <div class="col">
+          <div class="form-group">
+            <label for="deptid">Department</label>
+            <select
+            name="deptid"
+            id="deptid"
+            formControlName="departmentId"
+            [ngClass]="{'is-invalid': submitted && employeeForm.get('department.departmentId').invalid}"
+            class="custom-select">
+                <option *ngFor="let dept of departments" [value]="dept.departmentId"> {{dept.departmentName}} </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('department.departmentId').invalid">Select a Department</div>
+          </div>
+        </div>
+      </div>
+      <!-- Manager  -->
+      <div class="col" formGroupName="manager">
+        <div class="form-group">
+          <label for="managerid">Manager</label>
+          <select
+          name="managerid"
+          id="managerid"
+          formControlName="empDetailsId"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('manager.empDetailsId').invalid}"
+          class="custom-select">
+              <option *ngFor="let manager of managers" [value]="manager.managerId"> {{manager | managerInfo}} </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('manager.empDetailsId').invalid">Select a Manager</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Grade  -->
+      <div class="col">
+        <div class="form-group">
+          <label for="grade">Grade</label>
+          <select
+          name="grade"
+          id="grade"
+          (change)="gradeIsSelected($event)"
+          formControlName="grade"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('grade').invalid}"
+          class="custom-select">
+              <option *ngFor="let g of grades; let i = index;" [value]="g.gradeCode" #lol> {{ g | gradeType}} </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('grade').invalid">Select a Grade</div>
+        </div>
+      </div>
+      <!-- Salaray  -->
+      <div class="col">
+        <div class="form-group" *ngIf="employeeForm.get('grade').valid">
+          <label for="salary">Salary</label>
+          <input
+          formControlName="basic"
+          id="salary"
+          class="form-control"
+          [ngClass]="{'is-invalid': submitted && employeeForm.get('basic').invalid}"
+          type="number"
+          name="salary"
+          placeholder="Enter Salary">
+          <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('basic').invalid">
+            <div *ngIf="employeeForm.get('basic').errors['required']">* Required</div>
+            <div *ngIf="employeeForm.get('basic').errors['salaryIsForbidden']">Salary must be between {{ selectedGrade | gradeType }}</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <!-- Designation  -->
+          <div class="form-group">
+            <label for="designation">Select designation</label>
+            <select
+            name="designation"
+            id="designation"
+            formControlName="designation"
+            [ngClass]="{'is-invalid': submitted && employeeForm.get('designation').invalid}"
+            class="custom-select">
+                <option *ngFor="let desig of designations | keyvalue; let i = index;" [value]="desig.key"> {{ desig.key }} </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('designation').invalid">Select a Designation</div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <!-- Contact number  -->
+      <div class="form-group">
+        <label for="phonenumber">Contact Number</label>
+        <input
+        formControlName="phoneNumber"
+        id="phonenumber"
+        class="form-control"
+        [ngClass]="{'is-invalid': submitted && employeeForm.get('phoneNumber').invalid}"
+        type="number"
+        name="phonenumber"
+        placeholder="Enter Contact Number">
+        <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('phoneNumber').invalid">
+          <div *ngIf="employeeForm.get('phoneNumber').errors['required']">* Required</div>
+          <div *ngIf="employeeForm.get('phoneNumber').errors['pattern']">Must be 10 digits, beginning from 8/9</div>
+        </div>
+      </div>
+      </div>
+
+      <div class="col">
+        <!-- Email  -->
+      <div class="form-group">
+        <label for="emailid">Email ID</label>
+        <input
+        formControlName="email"
+        id="emailid"
+        class="form-control"
+        [ngClass]="{'is-invalid': submitted && employeeForm.get('email').invalid}"
+        type="email"
+        name="emailid"
+        placeholder="Enter Email Id">
+        <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('email').invalid">
+          <div *ngIf="employeeForm.get('email').errors['required']">* Required</div>
+          <div *ngIf="employeeForm.get('email').errors['pattern']">Must be 10 digits, beginning from 8/9</div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div formGroupName="address">
+      <div class="row">
+        <!-- Street  -->
+        <div class="col">
+          <div class="form-group">
+            <label for="state">State</label>
+            <input
+              formControlName="state"
+              id="state"
+              class="form-control"
+              [ngClass]="{'is-invalid': submitted && employeeForm.get('address.state').invalid}"
+              type="text"
+              name="state"
+              placeholder="Enter State details">
+              <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('address.state').invalid">
+                <div *ngIf="employeeForm.get('address.state').errors['required']">* Required</div>
+              </div>
+          </div>
+        </div>
+        <!-- area  -->
+        <div class="col">
+          <div class="form-group">
+            <label for="area">Nearest area</label>
+            <input
+              formControlName="area"
+              id="area"
+              class="form-control"
+              [ngClass]="{'is-invalid': submitted && employeeForm.get('address.area').invalid}"
+              type="text"
+              name="area"
+              placeholder="Enter Area">
+              <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('address.area').invalid">
+                <div *ngIf="employeeForm.get('address.area').errors['required']">* Required</div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- city  -->
+        <div class="col">
+          <div class="form-group">
+          <label for="city">City</label>
+          <input
+            formControlName="city"
+            id="city"
+            class="form-control"
+            [ngClass]="{'is-invalid': submitted && employeeForm.get('address.city').invalid}"
+            type="text"
+            name="city"
+            placeholder="Enter City name">
+            <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('address.city').invalid">
+              <div *ngIf="employeeForm.get('address.city').errors['required']">* Required</div>
+            </div>
+
+            </div>
+        </div>
+        <!-- pincode  -->
+        <div class="col">
+          <div class="form-group">
+            <label for="pcode">Area Pincode</label>
+            <input
+            formControlName="pincode"
+            id="pcode"
+            class="form-control"
+            [ngClass]="{'is-invalid': submitted && employeeForm.get('address.pincode').invalid}"
+            type="number"
+            name="pcode"
+            placeholder="Enter Pincode">
+            <div class="invalid-feedback" *ngIf="submitted && employeeForm.get('address.pincode').invalid">
+              <div *ngIf="employeeForm.get('address.pincode').errors['required']">* Required</div>
+              <div *ngIf="employeeForm.get('address.pincode').errors['pattern']">Must be 6 digits</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button type="submit" class="btn btn-primary" *ngIf="!isLoading">Next</button>
+        <div class="spinner-border text-primary" style="margin-left: 20px; padding-top: 20px;" *ngIf="isLoading"></div>
+      </div>
+      <div class="col text-danger">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <div *ngIf="referenceMessage" class="text-success">
+      {{ referenceMessage | json }}
+    </div>
+    </div>
+    </form>
+  <pre>
+    <!-- {{ employeeForm.value | json }} -->
+  </pre>
+</div>

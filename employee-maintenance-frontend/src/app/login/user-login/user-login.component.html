@@ -1,0 +1,64 @@
+<div class="main">
+  <div class="sidenav">
+    <div class="login-main-text">
+      <h2 class="display-4">Employee<br>Management <br>System </h2>
+      <br>
+      <p>Login from here to access.</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <form class="login-form" (ngSubmit)="login(loginForm)" #loginForm=ngForm>
+      <!-- Username -->
+      <div>
+        <div class="form-group">
+          <label>Username</label>
+          <input 
+          name="username"
+          class="form-control" 
+          placeholder="Enter Username"
+          ngModel
+          type="text"
+          #username="ngModel"
+          [ngClass]="{'is-invalid': loginForm.submitted && username.invalid || errorUsername!=undefined }"
+          required>
+          <div *ngIf="loginForm.submitted" class="invalid-feedback">
+            <div *ngIf="username.invalid && username.errors.required">Username cannot be empty</div>
+            <div *ngIf="errorUsername!=undefined"> {{ errorUsername}} </div>
+            </div>
+        </div>
+      </div>
+      <!-- Password -->
+      <div>
+        <div class="form-group">
+          <label>Password</label>
+          <input 
+          name="password"
+          class="form-control"
+          type="password"
+          ngModel
+          #password="ngModel"
+          placeholder="Enter Password"
+          [ngClass]="{'is-invalid': loginForm.submitted && password.invalid || errorPassword!=undefined}"
+          required>
+          <div *ngIf="loginForm.submitted" class="invalid-feedback">
+              <div *ngIf="password.invalid"> Password cannot be empty</div>
+              <div *ngIf="errorPassword!=undefined"> {{ errorPassword}} </div>
+          </div>
+        </div>
+      </div>
+      <!-- SignIn Checkbox -->
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input
+            class="custom-control-input" type="checkbox" id="staySignedIn" name="staySignedIn" (click)="saveSignedInState()" >
+          <label class="custom-control-label" for="staySignedIn">Stay Signed In</label>
+        </div>
+      </div>
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-black" *ngIf="!isLoading">Login</button>
+      <div class="spinner-border text-dark" *ngIf="isLoading"></div>
+      <!-- Server Error -->
+      <div *ngIf="errorMessage" class="text-danger" style="margin-top: 12px;">Cannot connect to server</div>
+    </form>
+  </div>
+</div>

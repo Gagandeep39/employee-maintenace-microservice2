@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading row">
+      <h2 class="panel-title display-4" style="text-align: left;"><b> {{ employee?.firstName}} {{employee?.lastName }} </b>
+        <div class="spinner-border text-dark" *ngIf="isLoading"></div>
+      </h2>
+      <hr>
+    </div>
+    <div class="row panel-body">
+      <div class="col-5">
+        <table class="table table-user-information table-hover">
+          <tbody>
+            <tr>
+              <td class="title"> Employee ID</td>
+              <td> {{ employee?.empDetailsId }} </td>
+            </tr>
+            <tr>
+              <td class="title"> Date of birth</td>
+              <td> {{ employee?.dateOfBirth }} </td>
+            </tr>
+            <tr>
+              <td class="title">Hire date</td>
+              <td> {{ employee?.dateOfJoining }} </td>
+            </tr>
+            <tr>
+            <tr>
+              <td class="title">Gender</td>
+              <td> {{employee?.gender }} </td>
+            </tr>
+            <tr>
+              <td class="title">Marital Status</td>
+              <td> {{employee?.maritalStatus}} </td>
+            </tr>
+            <tr>
+              <td class="title">Phone Number</td>
+              <td> {{ employee?.phoneNumber }} </td>
+            </tr>
+            <tr>
+              <td class="title">Area</td>
+              <td> {{ employee?.address.area }} </td>
+            </tr>
+            <tr>
+              <td class="title">City</td>
+              <td> {{ employee?.address.city }} </td>
+            </tr>
+            <tr>
+              <td class="title">State</td>
+              <td> {{ employee?.address.state }} </td>
+            </tr>
+            <tr>
+              <td class="title">Pincode</td>
+              <td> {{ employee?.address.pincode }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-5">
+        <table class="table table-user-information table-hover">
+
+          <tbody>
+
+            <tr *ngIf="userInfo!=undefined">
+              <td class="title">Username</td>
+              <td> {{ userInfo?.username  }} </td>
+            </tr>
+            <tr *ngIf="userInfo!=undefined">
+              <td class="title">Role</td>
+              <td> {{ userInfo?.role.role  }} </td>
+            </tr>
+            <tr>
+              <td class="title">Department</td>
+              <td> {{ employee?.department.departmentName  }} </td>
+            </tr>
+            <tr>
+              <td class="title">Manager ID</td>
+              <td> {{ employee?.manager }} </td>
+            </tr>
+            <tr>
+              <td class="title">Designation</td>
+              <td> {{ employee?.designation }} </td>
+            </tr>
+            <tr>
+              <td class="title">Grade</td>
+              <td> {{ employee?.grade }} </td>
+            </tr>
+            <tr>
+              <td class="title">Salary</td>
+              <td> {{ employee?.basic | currency:'&#8377;' }} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="userInfo==undefined">
+          <button class="btn btn-success" (click)="goBack()">Back</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

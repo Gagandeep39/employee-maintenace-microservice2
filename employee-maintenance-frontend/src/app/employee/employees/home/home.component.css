@@ -1,0 +1,15 @@
+/**
+ * @author Gagandeep Singh
+ * @email singh.gagandeep3911@gmail.com
+ * @create date 2020-05-10 18:58:15
+ * @modify date 2020-05-10 18:58:15
+ * @desc Improvde User info UI
+ */
+
+.title {
+    font-weight: bold;
+}
+.panel-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

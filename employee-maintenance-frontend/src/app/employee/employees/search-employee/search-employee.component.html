@@ -1,0 +1,102 @@
+<div class="container">
+  <legend class="row">
+    <h2 class="display-4 col"><b>Search</b></h2>
+  </legend>
+  <div>
+    <div class="dropdown row">
+      <div class="col">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Search by
+        </button>
+        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+          <li class="dropdown-item"><a (click)="setSearchType('firstName')">First Name</a></li>
+          <li class="dropdown-item"><a (click)="setSearchType('lastName')">Last Name</a></li>
+          <li class="dropdown-divider"></li>
+          <li class="dropdown-submenu" *ngIf="departments.length!=0">
+            <a class="dropdown-item">Department</a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item" *ngFor="let department of departments"><a
+                  (click)="searchItem('departments', department.departmentName)">{{department.departmentName}}</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu" *ngIf="grades.length!=0">
+            <a class="dropdown-item">Grade</a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item" *ngFor="let grade of grades"><a
+                  (click)="searchItem('grades', grade.gradeCode)">{{grade.gradeCode}}
+                  ({{grade.minSalary}}-{{grade.maxSalary}})</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu" *ngIf="maritalStatuses.length!=0">
+            <a class="dropdown-item">Marital Status</a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item" *ngFor="let maritalStatus of maritalStatuses"
+                (click)="searchItem('maritalStatus', maritalStatus)"><a>{{maritalStatus}}</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-item"><a (click)="searchItem('all', '')">All</a></li>
+        </ul>
+      </div>
+      
+      <div class="col" *ngIf="isLoading">
+        <div class="spinner-border text-dark"></div>
+      </div>
+      <!-- Search Btn -->
+      <div class="col">
+        <div class="input-group mb-3" *ngIf="nameType=='firstName' || nameType=='lastName'">
+          <input class="form-control" type="text" name="search" id="search" #search placeholder="Enter name">
+          <div class="input-group-append">
+            <input type="submit" class="btn btn-success" value="Search" (click)="searchByName(nameType, search.value)">
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col text-danger">
+        {{ errorMessage }}
+      </div>
+      
+    </div>
+    <table class="table table-hover table-bordered" style="margin-top: 12px;">
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>First Name</td>
+          <td>Last Name</td>
+          <td>Department</td>
+          <td>Grade</td>
+          <td>Marital Status</td>
+          <td>Gender</td>
+          <td>Manager ID</td>
+          <td>Details</td>
+        </tr>
+      </thead>
+      <tr *ngFor="let employee of employeePage.content">
+        <th> {{ employee.empDetailsId }} </th>
+        <td> {{ employee.firstName }} </td>
+        <td> {{ employee.lastName }} </td>
+        <td> {{ employee.department.departmentName }} </td>
+        <td> {{ employee.grade }} </td>
+        <td> {{ employee.maritalStatus }} </td>
+        <td> {{ employee.gender }} </td>
+        <td> {{ employee.manager }} </td>
+        <td> <button class="btn btn-primary"
+            [routerLink]="[ '/employee/details', employee.empDetailsId ]">Details</button> </td>
+      </tr>
+
+    </table>
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a *ngIf="!employeePage.first" class="page-link" (click)="previousPage()">Previous</a>
+        <a *ngIf="employeePage.first" class="page-link" [ngClass]="{'disabled': employeePage.first}">Previous</a>
+      </li>
+      <li class="page-item" *ngFor="let count of counter(employeePage.totalPages); let i = index">
+        <a class="page-link" (click)="goToPage(i)"> {{ i+1 }} </a>
+      </li>
+      <li class="page-item">
+        <a *ngIf="!employeePage.last" class="page-link" (click)="nextPage()">Next</a>
+        <a *ngIf="employeePage.last" class="page-link" [ngClass]="{'disabled': employeePage.last}">Next</a>
+      </li>
+    </ul>
+  </div>

@@ -1,0 +1,54 @@
+<!--
+@author Gagandeep Singh
+@email singh.gagandeep3911@gmail.com
+@create date 2020-05-09 19:03:42
+@modify date 2020-05-09 19:03:42
+@desc Navigation Bar
+-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow p-3 mb-5">
+    <a class="navbar-brand mb-0 h1" [routerLink]="['/employee/home']" routerLinkActive="active">Employee Maintenance System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/employee/home']" routerLinkActive="active">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/employee/search']" routerLinkActive="active">Search</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/employee/leaves']" routerLinkActive="active">My Leaves</a>
+      </li>
+
+      <!-- Manager Features -->
+      <li class="nav-item dropdown" *ngIf="role=='ROLE_MANAGER'">
+        <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">Manager Menu</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/employee/manager/approve']">Leave Requests</a>
+        </div>
+      </li>
+
+      <!-- Admin Features -->
+      <li class="nav-item dropdown" *ngIf="role=='ROLE_ADMIN'">
+        <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">Admin Menu</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" [routerLink]="['/employee/admin/adduser']">Add</a>
+            <a class="dropdown-item" [routerLink]="['/employee/admin/viewuser']">Admin Search</a>
+        </div>
+      </li>
+    </ul>
+
+    <!-- More -->
+    <ul class="nav-item dropdown my-2 my-lg-0">
+      <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">More</a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" [routerLink]="['/employee/change']">Change Password</a>
+        <a class="dropdown-item" (click)="logOut()">Log Out</a>
+      </div>
+    </ul>
+  </div>
+</nav>

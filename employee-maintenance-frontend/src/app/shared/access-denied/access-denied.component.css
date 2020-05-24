@@ -1,0 +1,74 @@
+/**
+ * @author Pranav Karmarkar
+ */
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.error-wrapper {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  animation: errorBackground linear 2s alternate infinite;
+  background-image: radial-gradient(ellipse at center, transparent 0%,#333333 100%);
+  background-size: 100vmax 100vmax;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.error-message { 
+  position: fixed;
+  top: 20px;
+  padding: 5vmin;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 40vh;
+  font-family: 'Press Start 2p', monospace;
+  text-shadow: 
+  .5vmin .5vmin 0 #000000, 
+  -.5vmin .5vmin 0 #000000, 
+  .5vmin -.5vmin 0 #000000, 
+  -.5vmin -.5vmin 0 #000000,
+    
+  .5vmin 0 0 #000000, 
+  -.5vmin 0 0 #000000, 
+  0 -.5vmin 0 #000000, 
+  0 .5vmin 0 #000000;
+  color: #ffffff;
+  
+  h1 {
+    font-size: 10vmin;
+    margin-top: 0;
+    margin-bottom: 5vmin;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 6vmin;
+    margin: 0;
+    text-align: center;
+  }
+}
+
+svg {
+  height: 60vh;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+}
+
+
+.rightclaw { visibility: hidden; }
+@keyframes errorBackground {
+  from{background-color: #ffaaaa;}
+  to {background-color: #aaaaff;}
+}
