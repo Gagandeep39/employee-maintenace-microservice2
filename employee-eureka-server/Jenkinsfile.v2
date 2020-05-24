@@ -3,23 +3,63 @@ pipeline {
     stages {
         stage ('Preparation') {
             steps {
-                sh 'cd employee-eureka-server'
-                sh 'chmod +x mvnw'
+                dir ('employee-eureka-server') {
+                    sh 'cd employee-eureka-server'
+                    sh 'chmod +x mvnw'
+                }
             }
         }
         stage ('Compile') {
             steps {
-                sh './mvnw compile'
+                dir ('employee-eureka-server') {
+                    sh './mvnw compile'
+                }
             }
         }
         stage ('Test') {
             steps {
-                sh './mvnw test'
+                dir ('employee-eureka-server') {
+                    sh './mvnw test'
+                }
             }
         }
-        stage ('Build') {
+        stage ('Package') {
             steps {
-                sh './mvnw clean package'
+                dir ('employee-eureka-server') {
+                    sh './mvnw clean package'
+                }
+            }
+        }
+        stage('Sonar Scanner') {
+            steps {
+                script {
+                    dir ('employee-eureka-server') {
+                        sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+                        sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=employee-eureka-server -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
+                        }
+                    }
+                }
+            }
+        }
+        stage ('Build/Publish') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+                        docker.build("gagandeep39/employee-eureka-server:${VERSION}", '.').push()
+                        docker.build('gagandeep39/employee-eureka-server:latest', '.').push()
+                    }
+                }
+            }
+        }
+        stage ('Deploy on this Server') {
+            steps {
+                script {
+                    sh 'docker stop spring-jenkins-demo || echo Container is not on'
+                    sh 'docker container rm -f spring-jenkins-demo || echo Container doesnt exists'
+                    docker.image('gagandeep39/employee-eureka-server:' + VERSION).run('-p 7000:7000 --name employee-eureka-server')
+                    sh 'docker image prune -f'
+                }
             }
         }
     }
