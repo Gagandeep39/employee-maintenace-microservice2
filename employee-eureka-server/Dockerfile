@@ -1,6 +1,6 @@
 FROM openjdk:8-jdk-alpine
 ADD target/*.jar employee-eureka-server.jar 
-EXPOSE 9000
+EXPOSE 7000
 ENTRYPOINT [ "java", "-jar", "employee-eureka-server.jar" ]
 
 # Steps to run
