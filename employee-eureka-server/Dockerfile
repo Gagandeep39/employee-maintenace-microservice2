@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 ADD target/*.jar employee-eureka-server.jar 
 EXPOSE 7000
 ENTRYPOINT [ "java", "-jar", "employee-eureka-server.jar" ]
