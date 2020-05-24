@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 ADD target/*.jar employee-login-service.jar 
 EXPOSE 9100
 # Here we are exclicitly specifying docer the url 
