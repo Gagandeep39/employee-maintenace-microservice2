@@ -3,7 +3,7 @@ ADD target/employee-management-service-0.0.1-SNAPSHOT.jar employee-management-se
 EXPOSE 9200
 # Here we are exclicitly specifying docer the url 
 # Container does not run on localhost which cause eureka server to not comminicate with other
-ENTRYPOINT [ "java", "-jar", "employee-management-service.jar", "--eureka.instance.hostname=192.168.99.100" ]
+ENTRYPOINT [ "java", "-jar", "employee-management-service.jar", "--eureka.instance.hostname=139.59.72.125", "--eureka.instance.port=7000", "--mysql.hostname=remote-mysql", "--spring.profiles.active=prod" ]
 
 # Steps to run
 # 1. Build jar file
