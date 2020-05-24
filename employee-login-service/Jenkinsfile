@@ -1,0 +1,84 @@
+
+pipeline =  {
+    stage('Checkout') {
+        checkout scm
+    }
+    stage('Preparation') {
+        dir('employee-login-service') {
+            pom = readMavenPom file: 'pom.xml'
+            sh 'echo pom.version'
+            IMAGE = pom.artifactId
+            VERSION = pom.version
+            sh 'chmod +x mvnw'
+        }
+    }
+    stage ('Compile Stage') {
+        dir('employee-login-service') {
+            sh'./mvnw clean compile'
+        }
+    } 
+    stage ('Testing Stage') {
+        dir('employee-login-service') {
+            sh'./mvnw test'
+        }
+    }
+    stage ('Package Stage') {
+        dir('employee-login-service') {
+            sh'./mvnw package'
+        }
+    }
+    stage('Sonar Scanner') {
+        dir ('employee-login-service') {
+            SONAR = credentials('sonar')
+            sh './mvnw sonar:sonar -Dsonar.login=${sonarLogin} -Dsonar.host.url=http://sonarqube:9000'
+            // def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+            // withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+            // sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=employee-login-service -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
+            // }
+        }
+    }
+    stage ('Build/Publish') {
+        dir ('employee-login-service') {
+            docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+            docker.build("gagandeep39/employee-login-service:${VERSION}", '.').push()
+            docker.build("gagandeep39/employee-login-service:latest", '.').push()
+            }
+        }
+    }
+    stage ('Deploy on this Server') {
+        dir ('employee-login-service') {
+            sh 'echo ${VERSION}'
+            sh 'docker stop employee-login-service || echo Container is not on'
+            sh 'docker container rm -f employee-login-service || echo Container doesnt exists'
+            docker.image('gagandeep39/employee-login-service:' + VERSION).run('-p 9100:9100 -p 9050:9050 --entrypoint "--eureka.instance.hostname=139.59.72.125" --name employee-login-service')
+            sh 'docker image prune -f'
+        }
+    }
+}
+postFailure = {
+    def to = emailextrecipients([
+        [$class: 'CulpritsRecipientProvider'],
+        [$class: 'DevelopersRecipientProvider'],
+        [$class: 'RequesterRecipientProvider']
+    ])
+
+    currentBuild.result = 'FAILURE'
+    // set variables
+    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+    def content = '${JELLY_SCRIPT,template="html"}'
+    // send email
+    if (to != null && !to.isEmpty()) {
+        emailext(body: content, mimeType: 'text/html',
+                replyTo: '$DEFAULT_REPLYTO', subject: subject,
+                to: to, attachLog: true )
+    }
+}
+
+node {
+    try {
+        pipeline()
+    }
+    catch (e) {
+        postFailure()
+    }
+}
