@@ -4,8 +4,8 @@ node {
         checkout scm
     }
     stage('Preparation') {
+            sh 'cd employee-eureka-server'
             sh 'ls'
-            cd 'employee-eureka-server'
             pom = readMavenPom file: 'pom.xml'
             sh 'echo pom.version'
             IMAGE = pom.artifactId
