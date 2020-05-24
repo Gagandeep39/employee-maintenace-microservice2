@@ -18,23 +18,23 @@ pipeline = {
     stage ('Package Stage') {
         sh'./mvnw package'
     }
-    stage('Sonar Scanner') {
-        def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-            sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=spring-jenkin-demo -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
-        }
-    }
-    stage ('Build/Publish') {
-        docker.withRegistry('https://index.docker.io/v1/', 'docker') {
-            docker.build("gagandeep39/spring-jenkins-demo:${VERSION}", '.').push()
-        }
-    }
-    stage ('Deploy on this Server') {
-        sh 'docker stop spring-jenkins-demo || echo Container is not on'
-        sh 'docker container rm -f spring-jenkins-demo || echo Container doesnt exists'
-        docker.image('gagandeep39/spring-jenkins-demo:' + VERSION).run('-p 8081:8081 --name spring-jenkins-demo')
-        sh 'docker image prune -f'
-    }
+    // stage('Sonar Scanner') {
+    //     def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+    //     withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+    //         sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=spring-jenkin-demo -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
+    //     }
+    // }
+    // stage ('Build/Publish') {
+    //     docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+    //         docker.build("gagandeep39/spring-jenkins-demo:${VERSION}", '.').push()
+    //     }
+    // }
+    // stage ('Deploy on this Server') {
+    //     sh 'docker stop spring-jenkins-demo || echo Container is not on'
+    //     sh 'docker container rm -f spring-jenkins-demo || echo Container doesnt exists'
+    //     docker.image('gagandeep39/spring-jenkins-demo:' + VERSION).run('-p 8081:8081 --name spring-jenkins-demo')
+    //     sh 'docker image prune -f'
+    // }
 }
 
 postFailure = {
@@ -58,10 +58,10 @@ postFailure = {
 }
 
 node {
-    try {
+    // try {
         pipeline()
-    }
-    catch (e) {
-        postFailure(e)
-    }
+    // }
+    // catch (e) {
+    //     postFailure(e)
+    // }
 }
