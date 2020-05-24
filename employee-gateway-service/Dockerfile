@@ -1,7 +1,7 @@
 FROM openjdk:8-jre-alpine
 ADD target/*.jar employee-gateway-service.jar 
 EXPOSE 9900
-ENTRYPOINT ["java", "-jar", "employee-gateway-service.jar", "--eureka.instance.hostname=192.168.99.100" ]
+ENTRYPOINT [ "java", "-jar", "employee-gateway-service.jar", "--eureka.instance.hostname=139.59.72.125", "--eureka.instance.port=7000" ]
 
 # Steps to run
 # 1. Build jar file
