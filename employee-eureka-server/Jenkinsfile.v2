@@ -2,13 +2,13 @@ pipeline {
     agent any
     stages {
         stage ('Preparation') {
-            environment {
-                pom = readMavenPom file: 'employee-eureka-server/pom.xml'
-                IMAGE = pom.artifactId
-                VERSION = pom.version
-            }
+            // environment {
+            // }
             steps {
                 dir ('employee-eureka-server') {
+                pom = readMavenPom file: 'pom.xml'
+                IMAGE = pom.artifactId
+                VERSION = pom.version
                     sh 'chmod +x mvnw'
                 }
             }
