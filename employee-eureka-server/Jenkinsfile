@@ -41,6 +41,7 @@ pipeline =  {
         dir ('employee-eureka-server') {
             docker.withRegistry('https://index.docker.io/v1/', 'docker') {
             docker.build("gagandeep39/employee-eureka-server:${VERSION}", '.').push()
+            docker.build("gagandeep39/employee-eureka-server:latest", '.').push()
             }
         }
     }
@@ -49,7 +50,7 @@ pipeline =  {
             sh 'echo ${VERSION}'
             sh 'docker stop employee-eureka-server || echo Container is not on'
             sh 'docker container rm -f employee-eureka-server || echo Container doesnt exists'
-            docker.image('gagandeep39/employee-eureka-server:' + VERSION).run('-p 7000:7000 --name employee-eureka-server')
+            docker.image('gagandeep39/employee-eureka-server:' + VERSION).run('-p 7000:7000 --name employee-eureka-server -m=800m')
             sh 'docker image prune -f'
         }
     }
