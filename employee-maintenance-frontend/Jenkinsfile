@@ -5,7 +5,7 @@ pipeline = {
     }
     stage('Test') {
         nodejs(nodeJSInstallationName: 'nodejs14.3') {
-            dir ('employee-maintenace-frontend') {
+            dir ('employee-maintenance-frontend') {
                 sh 'npm install --only=dev'
                 sh 'npm test'
             }
@@ -13,14 +13,14 @@ pipeline = {
     }
     stage('Package') {
         nodejs(nodeJSInstallationName: 'nodejs14.3') {
-            dir ('employee-maintenace-frontend') {
+            dir ('employee-maintenance-frontend') {
                 sh 'npm install --only=dev'
                 sh 'ng build --prod'
             }
         }
     }
     stage ('Build and Publish') {
-        dir ('employee-maintenace-frontend') {
+        dir ('employee-maintenance-frontend') {
             docker.withRegistry('https://index.docker.io/v1/', 'docker') {
             docker.build("gagandeep39/employee-maintenace-frontend:${VERSION}", '.').push()
             docker.build("gagandeep39/employee-maintenace-frontend:latest", '.').push()
@@ -28,7 +28,7 @@ pipeline = {
         }
     }
     stage ('Deploy on this Server') {
-        dir ('employee-maintenace-frontend') {
+        dir ('employee-maintenance-frontend') {
             sh 'echo ${VERSION}'
             sh 'docker stop employee-maintenace-frontend || echo Container is not on'
             sh 'docker container rm -f employee-maintenace-frontend || echo Container doesnt exists'
