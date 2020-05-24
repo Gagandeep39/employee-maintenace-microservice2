@@ -1,0 +1,50 @@
+version: '2'
+services:
+  jenkins:
+    image: gagandeep39/jenkins-docker:2.0
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      - jenkins
+    volumes:
+      - /my_jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    container_name: my-jenkins-container
+  postgres:
+    image: postgres:13
+    networks:
+      - jenkins
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonarpasswd
+    volumes:
+      - /var/postgres-data:/var/lib/postgresql/data
+  sonarqube:
+    image: sonarqube:lts
+    ports:
+      - "9000:9000"
+      - "9092:9092"
+    networks:
+      - jenkins
+    environment:
+      SONARQUBE_JDBC_USERNAME: sonar
+      SONARQUBE_JDBC_PASSWORD: sonarpasswd
+      SONARQUBE_JDBC_URL: "jdbc:postgresql://postgres:5432/sonar"
+    depends_on: 
+      - postgres
+  mysql:
+    image: mysql:8.0.20
+    container_name: remote-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: userdb
+      # Run it in default network
+    network_mode: bridge
+    volumes: 
+      - /mysql_data:/var/lib/mysql
+
+# Command to run mysql container docker run --name remote-mysql -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_DATABASE=userdb -v /mysql_data:/var/lib/mysql -d mysql:8.0.20 
+
+networks:
+  jenkins:
