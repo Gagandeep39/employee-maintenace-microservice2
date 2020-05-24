@@ -12,7 +12,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:{eureka.instance.port}/eureka
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka
 
 # Fix CORS error in docker container after adding zuul gatemway
 # also add a CORS bean in main class
