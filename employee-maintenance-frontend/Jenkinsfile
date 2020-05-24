@@ -2,7 +2,7 @@ pipeline = {
     def commit_id
     stage('Preparation') {
         checkout scm
-        VERSION = sh returnStdout: true, script: '''grep 'version' package.json | cut -d '"' -f4 | tr '\n' '\0'''
+        VERSION = sh returnStdout: true, script: '''grep 'version' package.json | cut -d '"' -f4 | tr '\n' '\0' '''
     }
     // stage('Test') {
     //     nodejs(nodeJSInstallationName: 'nodejs14.3') {
