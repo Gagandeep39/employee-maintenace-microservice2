@@ -41,30 +41,30 @@ pipeline = {
     }
 }
 
-postFailure = {
-    def to = emailextrecipients([
-        [$class: 'CulpritsRecipientProvider'],
-        [$class: 'DevelopersRecipientProvider'],
-        [$class: 'RequesterRecipientProvider']
-    ])
+// postFailure = {
+//     def to = emailextrecipients([
+//         [$class: 'CulpritsRecipientProvider'],
+//         [$class: 'DevelopersRecipientProvider'],
+//         [$class: 'RequesterRecipientProvider']
+//     ])
 
-    currentBuild.result = 'FAILURE'
-    // set variables
-    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
-    def content = '${JELLY_SCRIPT,template="html"}'
-    // send email
-    if (to != null && !to.isEmpty()) {
-        emailext(body: content, mimeType: 'text/html',
-                replyTo: '$DEFAULT_REPLYTO', subject: subject,
-                to: to, attachLog: true )
-    }
-}
+//     currentBuild.result = 'FAILURE'
+//     // set variables
+//     def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+//     def content = '${JELLY_SCRIPT,template="html"}'
+//     // send email
+//     if (to != null && !to.isEmpty()) {
+//         emailext(body: content, mimeType: 'text/html',
+//                 replyTo: '$DEFAULT_REPLYTO', subject: subject,
+//                 to: to, attachLog: true )
+//     }
+// }
 
 node {
-    try {
+    // try {
         pipeline()
-    }
-    catch (e) {
-        postFailure()
-    }
+    // }
+    // catch (e) {
+    //     postFailure()
+    // }
 }
