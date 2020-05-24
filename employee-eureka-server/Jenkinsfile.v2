@@ -1,11 +1,11 @@
 pipeline {
     agent any
     environment {
-        sh 'cd employee-eureka-server'
     }
     stages {
         stage ('Preparation') {
             steps {
+                sh 'cd employee-eureka-server'
                 sh 'chmod +x mvnw'
             }
         }
