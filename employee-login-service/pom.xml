@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.gagan</groupId>
 	<artifactId>employee-login-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>employee-login-service</name>
 	<description>A Microservice to perform login Operation</description>
 

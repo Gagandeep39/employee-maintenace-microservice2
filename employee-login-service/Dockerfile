@@ -3,7 +3,7 @@ ADD target/*.jar employee-login-service.jar
 EXPOSE 9100
 # Here we are exclicitly specifying docer the url 
 # Container does not run on localhost which cause eureka server to not comminicate with other
-ENTRYPOINT [ "java", "-jar", "employee-login-service.jar", "--eureka.instance.hostname=139.59.72.125" ]
+ENTRYPOINT [ "java", "-jar", "employee-login-service.jar", "--eureka.instance.hostname=139.59.72.125 --eureka.instance.port=7000" ]
 
 # Steps to run
 # 1. Build jar file
