@@ -8,8 +8,8 @@ pipeline = {
         sh 'pwd'
         sh 'ls'
         sh 'cd employee-eureka-server'
-        echo 'test'
-        pom = readMavenPom file: 'pom.xml'
+        sh 'ls'
+        pom = readMavenPom file: 'employee-eureka-server/pom.xml'
         sh 'echo pom.version'
         IMAGE = pom.artifactId
         VERSION = pom.version
