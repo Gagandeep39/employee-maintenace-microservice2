@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine
-ADD target/employee-management-service-0.0.1-SNAPSHOT.jar employee-management-service.jar 
+ADD target/*.jar employee-management-service.jar 
 EXPOSE 9200
 # Here we are exclicitly specifying docer the url 
 # Container does not run on localhost which cause eureka server to not comminicate with other
