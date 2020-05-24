@@ -62,6 +62,6 @@ node {
         pipeline()
     }
     catch (e) {
-        postFailure()
+        postFailure(e)
     }
 }
