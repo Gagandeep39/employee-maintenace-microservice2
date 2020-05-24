@@ -1,0 +1,84 @@
+
+pipeline =  {
+    stage('Checkout') {
+        checkout scm
+    }
+    stage('Preparation') {
+        dir('employee-management-service') {
+            pom = readMavenPom file: 'pom.xml'
+            sh 'echo pom.version'
+            IMAGE = pom.artifactId
+            VERSION = pom.version
+            sh 'chmod +x mvnw'
+        }
+    }
+    stage ('Compile Stage') {
+        dir('employee-management-service') {
+            sh'./mvnw clean compile'
+        }
+    } 
+    stage ('Testing Stage') {
+        dir('employee-management-service') {
+            sh'./mvnw test'
+        }
+    }
+    stage ('Package Stage') {
+        dir('employee-management-service') {
+            sh'./mvnw package'
+        }
+    }
+    stage('Sonar Scanner') {
+        dir ('employee-management-service') {
+            SONAR = credentials('sonar')
+            sh './mvnw sonar:sonar -Dsonar.login=${sonarLogin} -Dsonar.host.url=http://sonarqube:9000'
+            // def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+            // withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+            // sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=employee-management-service -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
+            // }
+        }
+    }
+    stage ('Build/Publish') {
+        dir ('employee-management-service') {
+            docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+            docker.build("gagandeep39/employee-management-service:${VERSION}", '.').push()
+            docker.build("gagandeep39/employee-management-service:latest", '.').push()
+            }
+        }
+    }
+    stage ('Deploy on this Server') {
+        dir ('employee-management-service') {
+            sh 'echo ${VERSION}'
+            sh 'docker stop employee-management-service || echo Container is not on'
+            sh 'docker container rm -f employee-management-service || echo Container doesnt exists'
+            docker.image('gagandeep39/employee-management-service:' + VERSION).run('-p 9200:9200 --link remote-mysql --name employee-management-service')
+            sh 'docker image prune -f'
+        }
+    }
+}
+postFailure = {
+    def to = emailextrecipients([
+        [$class: 'CulpritsRecipientProvider'],
+        [$class: 'DevelopersRecipientProvider'],
+        [$class: 'RequesterRecipientProvider']
+    ])
+
+    currentBuild.result = 'FAILURE'
+    // set variables
+    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+    def content = '${JELLY_SCRIPT,template="html"}'
+    // send email
+    if (to != null && !to.isEmpty()) {
+        emailext(body: content, mimeType: 'text/html',
+                replyTo: '$DEFAULT_REPLYTO', subject: subject,
+                to: to, attachLog: true )
+    }
+}
+
+node {
+    try {
+        pipeline()
+    }
+    catch (e) {
+        postFailure()
+    }
+}
