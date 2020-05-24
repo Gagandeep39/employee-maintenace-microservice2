@@ -15,7 +15,7 @@ pipeline = {
     stage('Package') {
         nodejs(nodeJSInstallationName: 'nodejs14.3') {
             dir ('employee-maintenance-frontend') {
-                VERSION = require('./package.json').version;
+                VERSION = 1.0
                 sh 'npm install --only=dev'
                 sh 'npm install @angular/cli@6'
                 sh 'npm link @angular/cli@6'
