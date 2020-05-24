@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 ADD target/*.jar employee-leave-service.jar 
 EXPOSE 9300
 ENTRYPOINT [ "java", "-jar", "employee-leave-service.jar", "--eureka.instance.hostname=139.59.72.125", "--eureka.instance.port=7000", "--mysql.hostname=remote-mysql", "--spring.profiles.active=prod" ]
