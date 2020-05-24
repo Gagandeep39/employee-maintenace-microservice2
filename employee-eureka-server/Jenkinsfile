@@ -4,8 +4,8 @@ node {
         checkout scm
     }
     stage('Preparation') {
-            sh 'cd employee-eureka-server'
-            sh 'ls'
+            dir('employee-eureka-server') {
+                sh 'ls'
             pom = readMavenPom file: 'pom.xml'
             sh 'echo pom.version'
             IMAGE = pom.artifactId
@@ -13,8 +13,12 @@ node {
             sh 'git rev-parse --short HEAD > .git/commit-id'
             commit_id = readFile('.git/commit-id').trim()
             sh 'chmod +x mvnw'
+            }
     }
     stage ('Compile Stage') {
+        dir('employee-eureka-server') {
+            
             sh'./mvnw clean compile'
+        }
     }
 }
