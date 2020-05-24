@@ -1,10 +1,12 @@
 pipeline = {
 
-    def IMAGE = readMavenPom().getArtifactId()
-    def VERSION = readMavenPom().getVersion()
+    def IMAGE
+    def VERSION
 
     stage('Preparation') {
         sh 'cd employee-eureka-server'
+        IMAGE = readMavenPom().getArtifactId()
+        VERSION = readMavenPom().getVersion()
         checkout scm
         sh 'git rev-parse --short HEAD > .git/commit-id'
         commit_id = readFile('.git/commit-id').trim()
