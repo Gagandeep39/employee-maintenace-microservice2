@@ -67,7 +67,9 @@ postFailure = {
 
 node {
     // try {
-        pipeline()
+        dir('employee-eureka-server'){
+            pipeline()
+        }
     // }
     // catch (e) {
     //     postFailure(e)
