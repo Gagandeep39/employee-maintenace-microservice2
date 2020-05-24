@@ -1,5 +1,5 @@
-FROM openjdk:8-jdk-alpine
-ADD target/employee-gateway-service-0.0.1-SNAPSHOT.jar employee-gateway-service.jar 
+FROM openjdk:8-jre-alpine
+ADD target/*.jar employee-gateway-service.jar 
 EXPOSE 9900
 ENTRYPOINT ["java", "-jar", "employee-gateway-service.jar", "--eureka.instance.hostname=192.168.99.100" ]
 
