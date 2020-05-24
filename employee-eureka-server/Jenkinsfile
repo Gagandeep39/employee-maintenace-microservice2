@@ -5,6 +5,7 @@ pipeline = {
 
     stage('Preparation') {
         sh 'cd employee-eureka-server'
+        echo 'test'
         pom = readMavenPom file: 'pom.xml'
         sh 'echo pom.version'
         IMAGE = pom.artifactId
