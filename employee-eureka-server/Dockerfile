@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine
-ADD target/employee-eureka-server-0.0.1-SNAPSHOT.jar employee-eureka-server.jar 
+ADD target/*.jar employee-eureka-server.jar 
 EXPOSE 9000
 ENTRYPOINT [ "java", "-jar", "employee-eureka-server.jar" ]
 
