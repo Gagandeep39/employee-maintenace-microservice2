@@ -24,7 +24,7 @@ pipeline =  {
     }
     stage ('Package Stage') {
         dir('employee-validation-service') {
-            sh'./mvnw package'
+            sh'./mvnw clean package'
         }
     }
     stage('Sonar Scanner') {
@@ -46,7 +46,7 @@ pipeline =  {
             sh 'echo ${VERSION}'
             sh 'docker stop employee-validation-service || echo Container is not on'
             sh 'docker container rm -f employee-validation-service || echo Container doesnt exists'
-            docker.image('gagandeep39/employee-validation-service:' + VERSION).run('-p 9400:9400 --link remote-mysql --name employee-validation-service')
+            docker.image('gagandeep39/employee-validation-service:' + VERSION).run('-p 9400:9400 --link remote-mysql --name employee-validation-service -m=800m')
             sh 'docker image prune -f'
         }
     }
