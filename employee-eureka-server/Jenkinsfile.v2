@@ -4,9 +4,9 @@ pipeline {
         stage ('Preparation') {
             steps {
                 dir ('employee-eureka-server') {
-            pom = readMavenPom file: 'pom.xml'
-            IMAGE = pom.artifactId
-            VERSION = pom.version
+                    def pom = readMavenPom file: 'pom.xml'
+                    IMAGE = pom.artifactId
+                    VERSION = pom.version
                     sh 'chmod +x mvnw'
                 }
             }
