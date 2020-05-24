@@ -50,7 +50,7 @@ pipeline =  {
             sh 'echo ${VERSION}'
             sh 'docker stop employee-login-service || echo Container is not on'
             sh 'docker container rm -f employee-login-service || echo Container doesnt exists'
-            docker.image('gagandeep39/employee-login-service:' + VERSION).run('-p 9100:9100 -p 9050:9050 --entrypoint "--eureka.instance.hostname=139.59.72.125" --name employee-login-service')
+            docker.image('gagandeep39/employee-login-service:' + VERSION).run('-p 9100:9100 -p 9050:9050 --name employee-login-service')
             sh 'docker image prune -f'
         }
     }
