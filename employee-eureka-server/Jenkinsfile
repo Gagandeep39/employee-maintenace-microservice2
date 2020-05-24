@@ -5,9 +5,6 @@ pipeline = {
 
     // dir('employee-eureka-server') {
         stage('Preparation') {
-            checkout scm
-        sh 'pwd'
-        sh 'cd employee-eureka-server'
         sh 'ls'
         pom = readMavenPom file: 'employee-eureka-server/pom.xml'
         sh 'echo pom.version'
@@ -69,7 +66,15 @@ postFailure = {
 node {
     // try {
         // dir('employee-eureka-server'){
-            pipeline()
+            stage {
+                
+            checkout scm
+        sh 'pwd'
+        sh 'cd employee-eureka-server'
+            }
+            dir ('employee-eureka-server'){
+                pipeline()
+            }
         // }
     // }
     // catch (e) {
