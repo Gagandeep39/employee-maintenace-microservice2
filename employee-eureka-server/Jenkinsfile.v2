@@ -1,7 +1,7 @@
 pipeline {
     agent any
-    environment ('employee-eureka-server') {
-        dir {
+    environment {
+        dir ('employee-eureka-server') {
             pom = readMavenPom file: 'pom.xml'
             IMAGE = pom.artifactId
             VERSION = pom.version
