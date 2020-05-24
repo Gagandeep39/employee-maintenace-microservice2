@@ -3,7 +3,7 @@ pipeline = {
     def IMAGE
     def VERSION
 
-    dir('employee-eureka-server') {
+    // dir('employee-eureka-server') {
         stage('Preparation') {
         sh 'pwd'
         sh 'cd employee-eureka-server'
@@ -25,7 +25,7 @@ pipeline = {
     stage ('Package Stage') {
         sh'./mvnw package'
     }
-    }
+    // }
     // stage('Sonar Scanner') {
     //     def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
     //     withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
