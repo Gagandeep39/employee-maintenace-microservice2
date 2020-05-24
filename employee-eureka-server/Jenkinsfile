@@ -1,86 +1,25 @@
-pipeline = {
 
-    def IMAGE
-    def VERSION
-
-    // dir('employee-eureka-server') {
-        stage('Preparation') {
-        dir ('employee-eureka-server'){
+node {
+    stage {
+        checkout scm
+        sh 'pwd'
+        sh 'cd employee-eureka-server'
+    }
+    stage('Preparation') {
+        dir ('employee-eureka-server') {
             sh 'ls'
-        pom = readMavenPom file: 'pom.xml'
-        sh 'echo pom.version'
-        IMAGE = pom.artifactId
-        VERSION = pom.version
-        sh 'git rev-parse --short HEAD > .git/commit-id'
-        commit_id = readFile('.git/commit-id').trim()
-        sh 'chmod +x mvnw'
+            pom = readMavenPom file: 'pom.xml'
+            sh 'echo pom.version'
+            IMAGE = pom.artifactId
+            VERSION = pom.version
+            sh 'git rev-parse --short HEAD > .git/commit-id'
+            commit_id = readFile('.git/commit-id').trim()
+            sh 'chmod +x mvnw'
         }
     }
     stage ('Compile Stage') {
         dir ('employee-eureka-server') {
-            
-        sh'./mvnw clean compile'
+            sh'./mvnw clean compile'
         }
     }
-    // stage ('Testing Stage') {
-    //     sh'./mvnw test'
-    // }
-    // stage ('Package Stage') {
-    //     sh'./mvnw package'
-    // }
-    // }
-    // stage('Sonar Scanner') {
-    //     def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-    //     withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-    //         sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=spring-jenkin-demo -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
-    //     }
-    // }
-    // stage ('Build/Publish') {
-    //     docker.withRegistry('https://index.docker.io/v1/', 'docker') {
-    //         docker.build("gagandeep39/spring-jenkins-demo:${VERSION}", '.').push()
-    //     }
-    // }
-    // stage ('Deploy on this Server') {
-    //     sh 'docker stop spring-jenkins-demo || echo Container is not on'
-    //     sh 'docker container rm -f spring-jenkins-demo || echo Container doesnt exists'
-    //     docker.image('gagandeep39/spring-jenkins-demo:' + VERSION).run('-p 8081:8081 --name spring-jenkins-demo')
-    //     sh 'docker image prune -f'
-    // }
-}
-
-postFailure = {
-    
-    def to = emailextrecipients([
-        [$class: 'CulpritsRecipientProvider'],
-        [$class: 'DevelopersRecipientProvider'],
-        [$class: 'RequesterRecipientProvider']
-    ])
-
-    currentBuild.result = 'FAILURE'
-    // set variables
-    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
-    def content = '${JELLY_SCRIPT,template="html"}'
-    // send email
-    if (to != null && !to.isEmpty()) {
-        emailext(body: content, mimeType: 'text/html',
-                replyTo: '$DEFAULT_REPLYTO', subject: subject,
-                to: to, attachLog: true )
-    }
-}
-
-node {
-    // try {
-        // dir('employee-eureka-server'){
-            stage {
-                
-            checkout scm
-        sh 'pwd'
-        sh 'cd employee-eureka-server'
-            }
-                pipeline()
-        // }
-    // }
-    // catch (e) {
-    //     postFailure(e)
-    // }
 }
