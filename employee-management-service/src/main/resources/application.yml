@@ -1,0 +1,18 @@
+server:
+  port: 9200
+spring:
+  profiles:
+    active: dev
+  application:
+    name: employee-management-service
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:9000/eureka
+
+service:
+  url:
+    login: employee-login-service
+

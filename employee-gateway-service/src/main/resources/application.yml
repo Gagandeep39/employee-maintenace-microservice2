@@ -1,0 +1,20 @@
+server:
+  port: 9900
+spring:
+  application:
+    name: employee-gateway-service
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:9000/eureka
+
+# Fix CORS error in docker container after adding zuul gatemway
+# also add a CORS bean in main class
+zuul:
+  sensitiveHeaders:
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin

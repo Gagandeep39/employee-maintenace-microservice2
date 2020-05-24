@@ -1,0 +1,26 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2 
+  datasource:
+    # url: jdbc:h2:mem:mydb
+    url: jdbc:h2:tcp://${eureka.instance.hostname}:9050/mem:mydb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+    # data.sql query will be executed everytime
+    # Not required as we are using mem database
+    # initialization-mode: always
+    # Enables execution of data-h2.sql script
+    # platform: h2
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+  level:
+    # Info level for all java logs
+    ROOT: info
+    # debug leavel for all user defined classes log
+    com.cg: debug

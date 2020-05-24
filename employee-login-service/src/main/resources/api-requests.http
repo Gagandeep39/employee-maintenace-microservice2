@@ -1,0 +1,62 @@
+### Perform Login - Correct data
+POST http://localhost:9100/login
+Content-Type: application/json
+
+{
+  "username": "gagan",
+  "password": "123456"
+ }
+
+### Wrong Username
+POST http://localhost:9100/login
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "1234"
+}
+
+### Completely Wrong data
+POST http://localhost:9100/login
+Content-Type: application/json
+
+{
+}
+
+### Added User
+POST http://localhost:9100/login/add
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "1234",
+  "role": {
+    "roleId": 100001
+  }
+}
+
+### Change password
+POST  http://localhost:9100/login/change
+Content-Type: application/json
+
+{
+  "userId": "100001",
+  "oldPassword": "123456",
+  "password": "Ssj391111"
+}
+
+### UPdate User
+PUT  http://localhost:9100/login/update
+Content-Type: application/json
+
+{
+  "empId": "100001",
+  "password": "123456",
+  "username": "1234",
+  "role": {
+    "roleId": 100001
+  }
+}
+
+### Get User info 
+POST  http://localhost:9100/login/100001

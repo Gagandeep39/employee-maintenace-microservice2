@@ -1,0 +1,181 @@
+POST http://localhost:9200/employees/user
+Content-Type: application/json
+
+{
+  "username": "gagan1as",
+  "password": "123456",
+  "role": {
+    "roleId": 100001,
+    "role": "ROLE_ADMIN"
+  }
+}
+
+### Perform Login - Correct data
+POST http://localhost:9200/employees
+Content-Type: application/json
+
+{
+  "username": "gagan",
+  "password": "123456",
+  "role": {
+    "roleId": 100001,
+    "role": "ROLE_ADMIN"
+  },
+  "employeeDetails": {
+    "firstName": "Cem",
+    "lastName": "Riggs",
+    "dateOfBirth": "1991-08-30",
+    "dateOfJoining": "2018-12-31",
+    "email": "cem@mail.com",
+    "phoneNumber": "7555361368",
+    "maritalStatus": "Single",
+    "gender": "M",
+    "grade": "M2",
+    "basic": 220000.0,
+    "designation": "DataScientist",
+    "department": {
+      "departmentId": 100006,
+      "departmentName": "Recreation"
+    },
+    "address": {
+      "city": "CLEVELAND",
+      "state": "Ohio",
+      "area": "West Fork Drive",
+      "pincode": "44113"
+    },
+    "manager": {
+      "empDetailsId": 100006
+    }
+  }
+}
+
+### Get all employees with default values
+GET http://localhost:9200/employees/search
+
+### Get page no 2, page size 5
+GET http://localhost:9200/employees/search?pageNo=2&pageSize=5
+
+### Get First page, size 5, sort by last name
+GET http://localhost:9200/employees/search?pageNo=1&pageSize=5&sortBy=lastName
+
+### Categorywise Search
+### Multi gendered Search
+GET http://localhost:9200/employees/search/category?genders=M,F
+
+### Single Gender
+GET http://localhost:9200/employees/search/category?genders=M
+
+### Multi Grade Search
+GET http://localhost:9200/employees/search/category?grades=M1,M7
+
+### Single Grade
+GET http://localhost:9200/employees/search/category?grades=M1
+
+### Single Department XXX
+GET http://localhost:9200/employees/search/category?departments=100005
+
+### Multiple Department XXX
+GET http://localhost:9200/employees/search/category?departments=100005,100001
+
+### Manager ID
+GET http://localhost:9200/employees/search/category?managerId=100002
+
+### Fetch By MaritalStatus
+GET http://localhost:9200/employees/search/category?maritalStatus=Single,Divorced
+
+### Fetch By All
+GET http://localhost:9200/employees/search/category?all=
+
+### Fetch By First Name
+GET http://localhost:9200/employees/search/category?firstName=p
+
+### Search by name
+GET http://localhost:9200/employees/search/name?name=p
+
+### Searc By ID
+GET http://localhost:9200/employees/search/id/100001
+
+
+### Add Employee Version 2 (Not Implemented)
+POST http://localhost:9200/employees
+Content-Type: application/json
+
+{
+  "firstName": "Cem",
+  "lastName": "Riggs",
+  "dateOfBirth": "1991-08-30",
+  "dateOfJoining": "2018-12-31",
+  "email": "cem@mail.com",
+  "phoneNumber": "7555361368",
+  "maritalStatus": "Single",
+  "gender": "M",
+  "grade": "M2",
+  "basic": 220000.0,
+  "designation": "DataScientist",
+  "department": {
+    "departmentId": 100006,
+    "departmentName": "Recreation"
+  },
+  "address": {
+    "city": "CLEVELAND",
+    "state": "Ohio",
+    "area": "West Fork Drive",
+    "pincode": "44113"
+  },
+  "manager": {
+    "empDetailsId": 100006
+  },
+  "user": {
+    "username": "gagan",
+    "password": "123456",
+    "role": {
+      "roleId": 100001,
+      "role": "ROLE_ADMIN"
+    }
+  }
+}
+
+### Update Employee 
+
+PUT http://localhost:9200/employees
+Content-Type: application/json
+
+{
+    "empDetailsId": 100006,
+    "firstName": "Tem",
+    "lastName": "Rigg",
+    "dateOfBirth": "1991-08-30",
+    "dateOfJoining": "2018-12-31",
+    "email": "cem@mail.com",
+    "phoneNumber": "7555361368",
+    "maritalStatus": "Single",
+    "gender": "M",
+    "grade": "M2",
+    "basic": 220000.0,
+    "designation": "DataScientist",
+    "department": {
+      "departmentId": 100006,
+      "departmentName": "Recreation"
+    },
+    "address": {
+      "city": "CLEVELAND",
+      "state": "Ohio",
+      "area": "West Fork Drive",
+      "pincode": "44113"
+    },
+    "manager": {
+      "empDetailsId": 100006
+    }
+}
+
+### Fetch By MaritalStatus
+GET http://localhost:9200/employees/search/maritalStatus/Single,Divorc
+
+### Fetch By First Name
+GET http://localhost:9200/employees/search/firstName/g
+
+### Search by name
+GET http://localhost:9200/employees/search/lastName/s
+
+### Searc By ID
+GET http://localhost:9200/employees/search/genders/M

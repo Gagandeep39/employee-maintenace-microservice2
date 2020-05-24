@@ -1,0 +1,14 @@
+### Fetch all Grades
+GET http://localhost:9400/grades
+
+### Fetch all departments
+GET http://localhost:9400/departments
+
+### Fetch all Manager
+GET http://localhost:9400/managers
+
+### Fetch all Manager
+GET http://localhost:9400/roles
+
+### CHeck username exists
+GET http://localhost:9400/username?username=gagan

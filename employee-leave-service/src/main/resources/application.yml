@@ -1,0 +1,17 @@
+server:
+  port: 9300
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:9000/eureka
+spring:
+  profiles:
+    active: dev
+  application:
+    name: employee-leave-service
+
+#  jackson:
+#    serialization:
+#      fail-on-self-references: true
