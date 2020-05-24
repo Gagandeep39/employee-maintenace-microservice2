@@ -3,7 +3,7 @@ pipeline {
     environment {
         IMAGE = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
-        to = emailextrecipients([
+        def to = emailextrecipients([
         [$class: 'CulpritsRecipientProvider'],
         [$class: 'DevelopersRecipientProvider'],
         [$class: 'RequesterRecipientProvider']
