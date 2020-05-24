@@ -5,24 +5,29 @@ pipeline = {
 
     // dir('employee-eureka-server') {
         stage('Preparation') {
-        sh 'ls'
-        pom = readMavenPom file: 'employee-eureka-server/pom.xml'
+        dir ('employee-eureka-server'){
+            sh 'ls'
+        pom = readMavenPom file: 'pom.xml'
         sh 'echo pom.version'
         IMAGE = pom.artifactId
         VERSION = pom.version
         sh 'git rev-parse --short HEAD > .git/commit-id'
         commit_id = readFile('.git/commit-id').trim()
         sh 'chmod +x mvnw'
+        }
     }
     stage ('Compile Stage') {
+        dir ('employee-eureka-server') {
+            
         sh'./mvnw clean compile'
+        }
     }
-    stage ('Testing Stage') {
-        sh'./mvnw test'
-    }
-    stage ('Package Stage') {
-        sh'./mvnw package'
-    }
+    // stage ('Testing Stage') {
+    //     sh'./mvnw test'
+    // }
+    // stage ('Package Stage') {
+    //     sh'./mvnw package'
+    // }
     // }
     // stage('Sonar Scanner') {
     //     def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
@@ -72,9 +77,7 @@ node {
         sh 'pwd'
         sh 'cd employee-eureka-server'
             }
-            dir ('employee-eureka-server'){
                 pipeline()
-            }
         // }
     // }
     // catch (e) {
