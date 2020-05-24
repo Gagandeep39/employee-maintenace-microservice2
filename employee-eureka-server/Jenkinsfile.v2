@@ -4,7 +4,6 @@ pipeline {
         stage ('Preparation') {
             steps {
                 dir ('employee-eureka-server') {
-                    sh 'cd employee-eureka-server'
                     sh 'chmod +x mvnw'
                 }
             }
