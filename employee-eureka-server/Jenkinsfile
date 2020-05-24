@@ -1,8 +1,10 @@
 // Declarative Approach - Jenkins pipeline to build and publish docker image
 pipeline {
     agent any
+    ws('employee-eureka-server') {
+        sh 'pwd'
+    }
     environment {
-        echo 'cd employee-eureka-server'
         IMAGE = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
     }
@@ -10,6 +12,7 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
+        sh 'pwd'
                 checkout scm
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
