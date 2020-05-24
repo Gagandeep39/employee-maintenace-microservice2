@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
-ADD target/employee-validation-service-0.0.1-SNAPSHOT.jar employee-validation-service.jar 
+ADD target/*.jar employee-validation-service.jar 
 EXPOSE 9400
-ENTRYPOINT ["java", "-jar", "employee-validation-service.jar", "--eureka.instance.hostname=192.168.99.100" ]
+ENTRYPOINT [ "java", "-jar", "employee-validation-service.jar", "--eureka.instance.hostname=139.59.72.125", "--eureka.instance.port=7000", "--mysql.hostname=remote-mysql", "--spring.profiles.active=prod" ]
 
 # Steps to run
 # 1. Build jar file
