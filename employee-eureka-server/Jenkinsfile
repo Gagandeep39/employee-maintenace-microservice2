@@ -5,9 +5,7 @@ pipeline = {
 
     dir('employee-eureka-server') {
         stage('Preparation') {
-        checkout scm
         sh 'pwd'
-        sh 'ls'
         sh 'cd employee-eureka-server'
         sh 'ls'
         pom = readMavenPom file: 'employee-eureka-server/pom.xml'
