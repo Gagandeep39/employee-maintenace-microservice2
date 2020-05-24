@@ -2,7 +2,6 @@ pipeline = {
     def commit_id
     stage('Preparation') {
         checkout scm
-        VERSION = sh(script: 'npm run version', returnStdout: true)
     }
     // stage('Test') {
     //     nodejs(nodeJSInstallationName: 'nodejs14.3') {
@@ -16,6 +15,7 @@ pipeline = {
     stage('Package') {
         nodejs(nodeJSInstallationName: 'nodejs14.3') {
             dir ('employee-maintenance-frontend') {
+                VERSION = sh(script: 'npm run version', returnStdout: true)
                 sh 'npm install --only=dev'
                 sh 'npm install @angular/cli@6'
                 sh 'npm link @angular/cli@6'
