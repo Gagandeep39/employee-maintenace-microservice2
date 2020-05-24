@@ -5,8 +5,10 @@ pipeline = {
 
     stage('Preparation') {
         sh 'cd employee-eureka-server'
-        IMAGE = readMavenPom().getArtifactId()
-        VERSION = readMavenPom().getVersion()
+        pom = readMavenPom file: 'pom.xml'
+        sh 'echo pom.version'
+        IMAGE = pom.artifactId
+        VERSION = pom.version
         checkout scm
         sh 'git rev-parse --short HEAD > .git/commit-id'
         commit_id = readFile('.git/commit-id').trim()
