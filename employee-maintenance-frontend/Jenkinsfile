@@ -1,0 +1,67 @@
+pipeline = {
+    def commit_id
+    stage('Preparation') {
+        checkout scm
+    }
+    stage('Test') {
+        nodejs(nodeJSInstallationName: 'nodejs14.3') {
+            dir ('employee-maintenace-frontend') {
+                sh 'npm install --only=dev'
+                sh 'npm test'
+            }
+        }
+    }
+    stage('Package') {
+        nodejs(nodeJSInstallationName: 'nodejs14.3') {
+            dir ('employee-maintenace-frontend') {
+                sh 'npm install --only=dev'
+                sh 'ng build --prod'
+            }
+        }
+    }
+    stage ('Build and Publish') {
+        dir ('employee-maintenace-frontend') {
+            docker.withRegistry('https://index.docker.io/v1/', 'docker') {
+            docker.build("gagandeep39/employee-maintenace-frontend:${VERSION}", '.').push()
+            docker.build("gagandeep39/employee-maintenace-frontend:latest", '.').push()
+            }
+        }
+    }
+    stage ('Deploy on this Server') {
+        dir ('employee-maintenace-frontend') {
+            sh 'echo ${VERSION}'
+            sh 'docker stop employee-maintenace-frontend || echo Container is not on'
+            sh 'docker container rm -f employee-maintenace-frontend || echo Container doesnt exists'
+            docker.image('gagandeep39/employee-maintenace-frontend:' + VERSION).run('-p 4200:80 --name employee-maintenace-frontend -m=800m')
+            sh 'docker image prune -f'
+        }
+    }
+}
+
+postFailure = {
+    def to = emailextrecipients([
+        [$class: 'CulpritsRecipientProvider'],
+        [$class: 'DevelopersRecipientProvider'],
+        [$class: 'RequesterRecipientProvider']
+    ])
+
+    currentBuild.result = 'FAILURE'
+    // set variables
+    def subject = "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} ${currentBuild.result}"
+    def content = '${JELLY_SCRIPT,template="html"}'
+    // send email
+    if (to != null && !to.isEmpty()) {
+        emailext(body: content, mimeType: 'text/html',
+                replyTo: '$DEFAULT_REPLYTO', subject: subject,
+                to: to, attachLog: true )
+    }
+}
+
+node {
+    try {
+        pipeline()
+    }
+    catch (e) {
+        postFailure()
+    }
+}
