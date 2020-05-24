@@ -3,4 +3,4 @@ eureka:
       registerWithEureka: false
       fetchRegistry: false
 server:
-   port: 9000
+   port: 7000
