@@ -5,7 +5,6 @@ node {
     }
     stage('Preparation') {
         dir('employee-eureka-server') {
-            sh 'ls'
             pom = readMavenPom file: 'pom.xml'
             sh 'echo pom.version'
             IMAGE = pom.artifactId
@@ -30,9 +29,10 @@ node {
     }
     stage('Sonar Scanner') {
         dir ('employee-eureka-server') {
-            def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-            withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-            sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=employee-eureka-server -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
+            sh 'mvn sonar:sonar -Dsonar.login=${sonarLogin}'
+            // def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+            // withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+            // sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=employee-eureka-server -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/ -Dsonar.tests=src/test/ -Dsonar.language=java -Dsonar.java.binaries=."
             }
         }
     }
