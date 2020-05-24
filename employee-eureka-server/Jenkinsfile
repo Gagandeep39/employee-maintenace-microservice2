@@ -5,6 +5,7 @@ pipeline = {
 
     // dir('employee-eureka-server') {
         stage('Preparation') {
+            checkout scm
         sh 'pwd'
         sh 'cd employee-eureka-server'
         sh 'ls'
