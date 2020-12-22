@@ -3,7 +3,7 @@ server:
 eureka:
   instance:
     hostname: localhost
-    port: 9000
+    port: 7000
   client:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka

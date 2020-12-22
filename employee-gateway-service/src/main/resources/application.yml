@@ -7,7 +7,7 @@ spring:
 eureka:
   instance:
     hostname: localhost
-    port: 9000
+    port: 7000
   client:
     fetch-registry: true
     register-with-eureka: true
