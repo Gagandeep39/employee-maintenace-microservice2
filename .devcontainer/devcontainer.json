@@ -1,0 +1,37 @@
+{
+  "name": "Java Alpine",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  // Set *default* container specific settings.json values on container create.
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/zsh"
+  },
+
+  // Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "edwardhjp.vscode-author-generator",
+    "oderwat.indent-rainbow",
+    "pivotal.vscode-spring-boot",
+    "vscjava.vscode-spring-initializr",
+    "vscjava.vscode-spring-boot-dashboard",
+    "pivotal.vscode-manifest-yaml",
+    "visualstudioexptteam.vscodeintellicode",
+    "vscjava.vscode-java-debug",
+    "redhat.java",
+    "gabrielbb.vscode-lombok",
+    "humao.rest-client",
+  ],
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "cp .devcontainer/.zshrc $HOME && cp .devcontainer/.p10k.zsh $HOME"
+
+  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  // "remoteUser": "gagan"
+}
